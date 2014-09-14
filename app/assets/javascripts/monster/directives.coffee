@@ -5,12 +5,12 @@ app.directive 'draggablePopup', ->
     scope.$on 'reset_popup_position', ->
       element.removeAttr 'style'
 
-#app.directive 'esc', ->
-  #(scope, element, attrs) ->
-    #$(document).bind 'keydown', 'esc', ()=>
-      #scope.$root.$broadcast 'popup/close'
-    #$('input,textarea,select').bind 'keydown', 'esc', ()=>
-      #scope.$root.$broadcast 'popup/close'
+app.directive 'esc', ->
+  (scope, element, attrs) ->
+    $(document).bind 'keydown', 'esc', ()=>
+      scope.$root.$broadcast 'popup/close'
+    $('input,textarea,select').bind 'keydown', 'esc', ()=>
+      scope.$root.$broadcast 'popup/close'
 
 app.directive 'focusOn', ->
   link: (scope,element,attrs) ->
