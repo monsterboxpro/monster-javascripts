@@ -4,6 +4,34 @@
 # License: MIT
 #
 
+parameter_name = (root)->
+  name = root[0]
+  name += '['  + root.slice(1).join('][') + ']' if root.length > 1
+  name
+has_attached_file = (value)->
+  result = false
+  if typeof value == 'object' && !(value instanceof File)
+    for own k,v of value
+      result |= has_attached_file v
+  else if typeof value == 'array'
+    for vv in v
+      result |= has_attached_file vv
+  else
+    result |= value instanceof File
+  return result
+form_object_to_form_data = (value,fd=null,root=[]) ->
+  fd = new FormData() unless fd
+  if typeof value == 'object' && !(value instanceof File)
+    for own k,v of value
+      form_object_to_form_data v, fd, root.concat [k]
+  else if typeof value == 'array'
+    for i,vv in value
+      form_object_to_form_data vv, fd, root.concat [i]
+  else
+    return if _.last(root)[0] == '$' # Skip angular attributes like $$hashKey
+    fd.append parameter_name(root), value
+  fd
+
 class window.ApiBase
   _get:(table_name,action,name,params={},opts={})=>
     params.socket_id = window.socket_id if window.socket_id
@@ -14,11 +42,31 @@ class window.ApiBase
     @_callback table_name, req, action, opts
   _post:(table_name,action,name,params={},opts={})=>
     params.socket_id = window.socket_id if window.socket_id
-    req  = @$http.post name, params
+    if has_attached_file(params)
+      form_data = form_object_to_form_data(params)
+      req = @$http
+        method: 'POST'
+        url: name
+        data: form_data
+        transformRequest: angular.identity
+        headers:
+          'Content-Type': undefined
+    else
+      req  = @$http.post name, params
     @_callback table_name, req, action, opts
   _put:(table_name,action,name,params,opts={})=>
     params.socket_id = window.socket_id if window.socket_id
-    req  = @$http.put name, params
+    if has_attached_file(params)
+      form_data = form_object_to_form_data(params)
+      req = @$http
+        method: 'PUT'
+        url: name
+        data: form_data
+        transformRequest: angular.identity
+        headers:
+          'Content-Type': undefined
+    else
+      req  = @$http.put name, params
     @_callback table_name, req, action, opts
   _delete:(table_name,action,name,params={},opts={})=>
     params.socket_id = window.socket_id if window.socket_id
@@ -48,13 +96,13 @@ class window.ApiBase
   constructor:(@$rootScope,@$http)->
     _.each @resources, (options, table_name) =>
       @[table_name] =
-        index   : (params,opts)=>       @_get    table_name, 'index'  , @path(table_name) , params, opts
-        new     : (params,opts)=>       @_get    table_name, 'new'    , @path(table_name) , params, opts
-        create  : (params,opts)=>       @_post   table_name, 'create' , @path(table_name) , params, opts
-        show    : (model,params,opts)=> @_get    table_name, 'show'   , @path(table_name,@_extract_id(model)) , params, opts
-        edit    : (model,params,opts)=> @_get    table_name, 'edit'   , @path(table_name,@_extract_id(model)) , params, opts
-        update  : (model,params,opts)=> @_put    table_name, 'update' , @path(table_name,@_extract_id(model)) , params, opts
-        destroy : (model,params,opts)=> @_delete table_name, 'destroy', @path(table_name,@_extract_id(model)) , params, opts
+        index   : (params,opts)=>       @_get    table_name, 'index'  , @path(table_name)       , params, opts
+        new     : (params,opts)=>       @_get    table_name, 'new'    , @path(table_name,'new') , params, opts
+        create  : (params,opts)=>       @_post   table_name, 'create' , @path(table_name)       , params, opts
+        show    : (model,params,opts)=> @_get    table_name, 'show'   , @path(table_name,@_extract_id(model))        , params, opts
+        edit    : (model,params,opts)=> @_get    table_name, 'edit'   , @path(table_name,@_extract_id(model),'edit') , params, opts
+        update  : (model,params,opts)=> @_put    table_name, 'update' , @path(table_name,@_extract_id(model))        , params, opts
+        destroy : (model,params,opts)=> @_delete table_name, 'destroy', @path(table_name,@_extract_id(model))        , params, opts
       _.each options.collection, (method, action) =>
         name = @path table_name, action
         fun = switch method
