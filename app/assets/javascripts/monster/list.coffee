@@ -113,10 +113,10 @@ class window.PusherList
 
 class window.SearchList extends List
   constructor:->
-    @$.is_first_page  = @is_first_page
-    @$.has_more_pages = @has_more_pages
-    @$.next_page      = @next_page
-    @$.previous_page  = @previous_page
+    @$export 'is_first_page',
+             'has_more_pages',
+             'next_page',
+             'previous_page'
     @$.pagination ?=
       page        : 1
       pages       : 0
@@ -138,7 +138,6 @@ class window.SearchList extends List
 
     @$.$watch 'search_term', @search
     @$on 'data_sort', @sort
-
     super
   set_state:=>
     if window.history && window.history.replaceState
@@ -176,7 +175,7 @@ class window.SearchList extends List
       attrs['sort[cycle_index]'] = @sort_attrs.cycle_index
     if @search_attrs
       _.extend attrs, @search_attrs()
-    @Service[@action_name] attrs
+    @Api[@table_name][@action_name] attrs
     @$.$apply()
   is_first_page:=> @$.pagination.page == 1
   has_more_pages:=> @$.pagination.entries > @$.pagination.end_entry
