@@ -110,3 +110,73 @@ class window.PusherList
       @Pusher.$off key, "#{path}/create" , @create_success
       @Pusher.$off key, "#{path}/update" , @update_success
       @Pusher.$off key, "#{path}/destroy", @destroy_success
+
+class window.SearchList extends List
+  constructor:->
+    @$.is_first_page  = @is_first_page
+    @$.has_more_pages = @has_more_pages
+    @$.next_page      = @next_page
+    @$.previous_page  = @previous_page
+    @$.pagination ?=
+      page        : 1
+      pages       : 0
+      entries     : 0
+      per_page    : 0
+      start_entry : 0
+      end_entry   : 0
+    @search  = _.debounce @search, 500
+    @reindex = _.debounce @reindex, 10
+    @previous_term = ''
+
+    if window.history && window.history.state
+      state              = window.history.state
+      @$.search_term     = state.search
+      @previous_term     = state.search
+      @sort_attrs        = state.sort
+      @$.pagination.page = state.page
+      @reindex()
+
+    @$.$watch 'search_term', @search
+    @$on 'data_sort', @sort
+
+    super
+  set_state:=>
+    if window.history && window.history.replaceState
+      state =
+        page: @$.pagination.page
+        search: @$.search_term
+        sort: @sort_attrs
+      history.replaceState state, 'search'
+  sort:(e,data)=>
+    @sort_attrs = data
+    @reindex()
+  next_page:=>
+    return unless @has_more_pages()
+    @$.pagination.page++
+    @reindex()
+  previous_page:=>
+    return if @is_first_page()
+    @$.pagination.page--
+    @reindex()
+  search:=>
+    @$.pagination.page = 1
+    term = @$.search_term
+    if term != @previous_term
+      @previous_term = term
+      @reindex()
+  reindex:=>
+    @set_state()
+    attrs = {}
+    term = @$.search_term
+    attrs.search = @$.search_term if term && term.length >= 1
+    attrs.page = @$.pagination.page
+    if @sort_attrs
+      attrs['sort[column]']      = @sort_attrs.column
+      attrs['sort[direction]']   = @sort_attrs.direction
+      attrs['sort[cycle_index]'] = @sort_attrs.cycle_index
+    if @search_attrs
+      _.extend attrs, @search_attrs()
+    @Service[@action_name] attrs
+    @$.$apply()
+  is_first_page:=> @$.pagination.page == 1
+  has_more_pages:=> @$.pagination.entries > @$.pagination.end_entry
