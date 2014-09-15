@@ -14,12 +14,7 @@ class window.List
     @Api[@table_name][@action]() if @pull
     @index_success null, @data() if @data
     @$.destroy = @destroy
-  destroy:(model,e)=>
-    e.stopPropagation() if e.stopPropagation
-    e.preventDefault()  if e.preventDefault
-    e.cancelBubble = true
-    e.returnValue  = false
-
+  destroy:(model)=>
     name = _.singularize @table_name
     msg  = "Are you sure you wish to to destroy this #{name}"
     @Api[@table_name].destroy model if confirm msg
