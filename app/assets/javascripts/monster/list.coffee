@@ -19,6 +19,11 @@ class window.List
     msg  = "Are you sure you wish to to destroy this #{name}"
     @Api[@table_name].destroy model if confirm msg
   index_success:(e,data)=>
+    pagination = headers('X-Pagination')
+    if pagination
+      @$.pagination = JSON.parse(pagination)
+      @$.currentPage = @$.pagination.page
+      @$.totalItems = @$.pagination.total
     if @root
       @$.$root[@table_name] = data
     else
