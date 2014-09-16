@@ -79,5 +79,35 @@ Link = ($state, $stateParams, $interpolate) ->
       return
     $scope.$on '$stateChangeSuccess', update
   ]
-
 app.directive 'uiClass',['$state', '$stateParams','$interpolate',Link]
+
+
+controller = class
+  constructor:(@$)->
+    @$.has_next_page = @has_next_page
+    @$.has_previous_page = @has_previous_page
+    @$.next_page = @next_page
+    @$.previous_page = @previous_page
+  next_page:=>
+    return unless @has_next_page()
+    @$.$parent.pagination.page++
+  previous_page:=>
+    return unless @has_previous_page()
+    @$.$parent.pagination.page--
+  has_next_page:=> !@$.$parent.pagination?.last_page
+  has_previous_page:=> !@$.$parent.pagination?.first_page
+directive = () ->
+  priority: 1000
+  controller: ['$scope', controller]
+  scope: {}
+  template: '''
+    <div class="button" ng-click="previous_page()">
+      <span class="fa fa-chevron-left"></span>
+    </div>
+    <div class="button" ng-click="next_page()">
+      <span class="fa fa-chevron-right"></span>
+    </div>
+  '''
+app.directive 'pagination', [directive]
+
+
