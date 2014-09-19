@@ -9,8 +9,8 @@ class window.List
     @_register()
     if @popups is true
       @$.pop =
-        new:  if @Event[@table_name] then @Event[@table_name].new  else @Event.template(@table_name,'new')
-        edit: if @Event[@table_name] then @Event[@table_name].edit else @Event.template(@table_name,'edit')
+        new:  if @Event[@table_name] && @Event[@table_name].new  then @Event[@table_name].new  else @Event.template(@table_name,'new')
+        edit: if @Event[@table_name] && @Event[@table_name].edit then @Event[@table_name].edit else @Event.template(@table_name,'edit')
     @Api[@table_name][@action]() if @pull
     @index_success null, @data() if @data
     @$.destroy = @destroy
@@ -54,8 +54,8 @@ class window.PusherList
     @_register()
     if @popups is true
       @$.pop =
-        new:  if @Event[@table_name] then @Event[@table_name].new  else @Event.template(@table_name,'new')
-        edit: if @Event[@table_name] then @Event[@table_name].edit else @Event.template(@table_name,'edit')
+        new:  if @Event[@table_name] && @Event[@table_name].new  then @Event[@table_name].new  else @Event.template(@table_name,'new')
+        edit: if @Event[@table_name] && @Event[@table_name].edit then @Event[@table_name].edit else @Event.template(@table_name,'edit')
     @Api[@table_name][@action]() if @pull
     @index_success null, @data() if @data
     @$.destroy = @destroy

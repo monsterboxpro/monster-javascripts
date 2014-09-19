@@ -1,32 +1,39 @@
 class window.Popup
+  ui_router: false
+  pull: false
   constructor:->
     @table_name ||= @_controller
     @action     ||= @_action
-    @action       = 'new'  if @_action is 'form'
-    @action       = 'edit' if @_action is 'form' and @$stateParams.id
     @$export 'save',
              'cancel',
              'bg_cancel'
-    @$on "#{@table_name}/#{@action}#pop", @pop
-    @$on 'popup/close'                  , @esc_cancel
+
+    @_events = []
+    @_events.push @$on "#{@table_name}/#{@action}#pop", @pop
+    @_events.push @$on 'popup/close', @esc_cancel
+    if @_action is 'form' && @ui_router
+      @action = 'new'
+      @action = 'edit' if @$stateParams.id
+
     @$.submit = true
     @whitelist.push 'id' if @whitelist
-    if @table_name
-      name = _.singularize @table_name
-      name = name.replace /_/, ' '
-      @$.title = "#{_.capitalize(@action)} #{name}"
-    @$.action = @action
   pop:(e,data={})=>
     @$root.$broadcast 'reset_popup_position'
     _.each data, (v,k)=> @$[k] = v unless k is 'model'
+
+    if @_action is 'form' && @ui_router != true
+      @action = 'new'
+      @action = 'edit' if data.model && data.model.id
+    @popup_title()
+    @$.action = @action
+
     @_register()
     switch @action
       when 'new'
         @$.model = data.model || @model || {}
-        if @pull
-          @Api[@table_name].new()
+        @Api[@table_name].new() if @can_pull('new')
       when 'edit'
-        if @pull
+        if @can_pull('edit')
           @Api[@table_name].edit data.model
         else
           model = if @whitelist
@@ -35,8 +42,18 @@ class window.Popup
           else
             angular.copy data.model
           @$.model = model
-    @$.pop     = true
+    @$.pop        = true
     @$root.popped = true
+  can_pull:(name)=>
+    if _.isArray @pull
+      _.any @pull, name
+    else
+      @pull
+  popup_title:=>
+    if @table_name
+      name = _.singularize @table_name
+      name = name.replace /_/, ' '
+      @$.title = "#{_.capitalize(@action)} #{name}"
   bg_cancel:(e)=>
     if e && e.target && $(event.target).hasClass('popup_wrap')
       e.stopPropagation() if event.stopPropagation
@@ -81,16 +98,19 @@ class window.Popup
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
     switch @action
       when 'new'
-        @$.$on "#{path}/create"    , @success
-        @$.$on "#{path}/create#err", @err
+        @_events.push @$on "#{path}/create"    , @success
+        @_events.push @$on "#{path}/create#err", @err
       when 'edit'
-        @$.$on "#{path}/update"    , @success
-        @$.$on "#{path}/update#err", @err
-        if @pull
-          @$.$on "#{path}/edit"    , @edit_success
+        @_events.push @$on "#{path}/update"    , @success
+        @_events.push @$on "#{path}/update#err", @err
+        @_events.push @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       else
-        @$.$on "#{path}/#{@action}"    , @success
-        @$.$on "#{path}/#{@action}#err", @err
+        @_events.push @$on "#{path}/#{@action}"    , @success
+        @_events.push @$on "#{path}/#{@action}#err", @err
+    @$on '$destroy', @_unregister
+  _unregister:=>
+    for fn in @_events
+      fn()
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
