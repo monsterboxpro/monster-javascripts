@@ -34,7 +34,7 @@ class window.Popup
         @Api[@table_name].new() if @can_pull('new')
       when 'edit'
         if @can_pull('edit')
-          @Api[@table_name].edit data.model
+          @Api[@table_name].edit data.model, @attrs()
         else
           model = if @whitelist
             @$.model_prev = data.model
@@ -44,9 +44,11 @@ class window.Popup
           @$.model = model
     @$.pop        = true
     @$root.popped = true
+  attrs:=>
+    {}
   can_pull:(name)=>
     if _.isArray @pull
-      _.any @pull, name
+      _.any @pull, (n)-> n is name
     else
       @pull
   popup_title:=>
