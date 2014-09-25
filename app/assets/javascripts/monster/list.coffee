@@ -4,6 +4,8 @@ class window.List
   popups : false
   root   : false
   action : 'index'
+  attrs: =>
+    {}
   constructor:->
     @table_name = @_controller unless @table_name
     @_register()
@@ -15,10 +17,10 @@ class window.List
     @index_success null, @data() if @data
     @$.destroy = @destroy
   reindex:=>
-    attrs = {}
+    attrs = @attrs()
     if @$.pagination && @$.pagination.page
       attrs.page = @$.pagination.page
-    @Api[@table_name][@action] attrs
+    @Api[@table_name][@action] @attrs()
   destroy:(model)=>
     name = _.singularize @table_name
     msg  = "Are you sure you wish to to destroy this #{name}"
@@ -56,7 +58,7 @@ class window.List
 class window.PusherList
   scope: []
   pull: false
-  popups: true
+  popups: false
   root   : false
   action : 'index'
   constructor:->
