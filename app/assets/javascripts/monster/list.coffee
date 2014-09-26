@@ -23,8 +23,8 @@ class window.List
     @Api[@table_name][@action] @attrs()
   destroy:(model)=>
     name = _.singularize @table_name
-    msg  = "Are you sure you wish to to destroy this #{name}"
-    @Api[@table_name].destroy model if confirm msg
+    msg  = "Are you sure you wish to destroy this #{name}"
+    @Api[@table_name].destroy model, @attrs() if confirm msg
   index_success:(e,data,opts,status,headers,config)=>
     pagination = headers('X-Pagination')
     if pagination
