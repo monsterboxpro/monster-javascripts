@@ -13,7 +13,8 @@ class window.Form
     switch @action
       when 'new'
         @$.model = angular.copy(@model) || {}
-      when 'edit' then @Api[@table_name].edit @$stateParams.id, @reset_params()
+      when 'edit'
+        @Api[@table_name].edit @$stateParams.id, @reset_params(), @attrs()
   reset_params:=> {}
   context:=> {}
   save:=>
@@ -49,3 +50,5 @@ class window.Form
   create_failure:(e,data)=>
     @$.error_set_focus = false
     @$.errors = data
+  attrs:=>
+    {}
