@@ -14,8 +14,7 @@ class window.Form
       when 'new'
         @$.model = angular.copy(@model) || {}
       when 'edit'
-        @Api[@table_name].edit @$stateParams.id, @reset_params(), @attrs()
-  reset_params:=> {}
+        @Api[@table_name].edit @$stateParams.id, @attrs()
   context:=> {}
   save:=>
     params      = @filter_params()
