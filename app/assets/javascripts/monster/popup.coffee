@@ -9,7 +9,11 @@ class window.Popup
              'bg_cancel'
 
     @_events = []
-    @_events.push @$on "#{@table_name}/#{@action}#pop", @pop
+    if @_action is 'form'
+      @_events.push @$on "#{@table_name}/new#pop" , @pop
+      @_events.push @$on "#{@table_name}/edit#pop", @pop
+    else
+      @_events.push @$on "#{@table_name}/#{@action}#pop", @pop
     @_events.push @$on 'popup/close', @esc_cancel
     if @_action is 'form' && @ui_router
       @action = 'new'
