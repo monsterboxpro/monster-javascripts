@@ -12,6 +12,7 @@ class window.Popup
     if @_action is 'form'
       @_events.push @$on "#{@table_name}/new#pop" , @pop
       @_events.push @$on "#{@table_name}/edit#pop", @pop
+      @_events.push @$on "#{@table_name}/form#pop", @pop
     else
       @_events.push @$on "#{@table_name}/#{@action}#pop", @pop
     @_events.push @$on 'popup/close', @esc_cancel
