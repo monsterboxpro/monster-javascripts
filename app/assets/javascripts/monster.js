@@ -1,1 +1,7 @@
-//= require_tree './monster'
+//= require './monster/scaffold'
+//= require './monster/api'
+//= require './monster/directives'
+//= require './monster/filters'
+//= require './monster/form'
+//= require './monster/list'
+//= require './monster/popup'
