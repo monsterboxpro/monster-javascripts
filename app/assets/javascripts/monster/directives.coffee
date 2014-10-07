@@ -110,17 +110,17 @@ directive = () ->
   '''
 app.directive 'pagination', [directive]
 
-$directive 'tableHeading', '$timeout','$window',
-  ($timeout,$window)->
-    (scope,element,attrs)->
-      resize = ->
-        fun = ->
-          parent  = element.parent('.data_table')
-          columns = parent.find('.top_level:first .cell')
-          _.each columns, (e,i)=>
-            width = angular.element(e).outerWidth()
-            element.find(".cell:nth-child(#{i+1})").css width: "#{width}px"
-        $timeout fun, 0
-      angular.element($window).bind 'resize', resize
-      scope.$watch attrs.tableHeading       , resize
-      scope.$on 'data_heading'              , resize
+#$directive 'tableHeading', '$timeout','$window',
+  #($timeout,$window)->
+    #(scope,element,attrs)->
+      #resize = ->
+        #fun = ->
+          #parent  = element.parent('.data_table')
+          #columns = parent.find('.top_level:first .cell')
+          #_.each columns, (e,i)=>
+            #width = angular.element(e).outerWidth()
+            #element.find(".cell:nth-child(#{i+1})").css width: "#{width}px"
+        #$timeout fun, 0
+      #angular.element($window).bind 'resize', resize
+      #scope.$watch attrs.tableHeading       , resize
+      #scope.$on 'data_heading'              , resize
