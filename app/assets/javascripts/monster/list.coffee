@@ -3,6 +3,7 @@ class window.List
   pull   : false
   popups : false
   root   : false
+  search : false
   action : 'index'
   attrs: =>
     {}
@@ -14,12 +15,21 @@ class window.List
         new:  if @Event[@table_name] && @Event[@table_name].new  then @Event[@table_name].new  else @Event.template(@table_name,'new')
         edit: if @Event[@table_name] && @Event[@table_name].edit then @Event[@table_name].edit else @Event.template(@table_name,'edit')
     @reindex() if @pull
+    @$.$watch 'search', @update_search if @search
     @index_success null, @data() if @data
     @$.destroy = @destroy
+    @reindex = _.debounce @reindex, 100
+  update_search:(old_val,new_val)=>
+    if old_val != new_val
+      if @$.pagination
+        @$.pagination.page = 1
+      @reindex() if @pull
   reindex:=>
     attrs = @attrs()
     if @$.pagination && @$.pagination.page
       attrs.page = @$.pagination.page
+    if @search && @$.search
+      attrs.search = @$.search
     @Api[@table_name][@action] @attrs()
   destroy:(model)=>
     name = _.singularize @table_name
