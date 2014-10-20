@@ -30,7 +30,7 @@ class window.List
       attrs.page = @$.pagination.page
     if @search && @$.search
       attrs.search = @$.search
-    @Api[@table_name][@action] @attrs()
+    @Api[@table_name][@action] attrs
   destroy:(model)=>
     name = _.singularize @table_name
     msg  = "Are you sure you wish to destroy this #{name}"
