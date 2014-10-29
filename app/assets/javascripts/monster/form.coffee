@@ -7,7 +7,9 @@ class window.Form
     @action     ||= @_action
     @action       = 'new'  if @_action is 'form'
     @action       = 'edit' if @_action is 'form' and @$stateParams.id
-    @$.save = @save
+    @$.save  = @save
+    @$.back  = @back
+    @$.title = "#{@action} #{@table_name}"
     @_register()
     @reset()
   reset:=>
@@ -63,3 +65,7 @@ class window.Form
       _.any @pull, (n)-> n is name
     else
       @pull
+  back:=>
+    switch @action
+      when 'new'  then @$state.go @table_name
+      when 'edit' then @$state.go "#{@table_name}.show"

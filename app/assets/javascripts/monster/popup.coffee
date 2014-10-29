@@ -6,8 +6,8 @@ class window.Popup
     @action     ||= @_action
     @$export 'save',
              'cancel',
-             'bg_cancel'
-
+             'bg_cancel',
+             'destroy'
     @_events = []
     if @_action is 'form'
       @_events.push @$on "#{@table_name}/new#pop" , @pop
@@ -121,3 +121,7 @@ class window.Popup
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
+  destroy:=>
+    name = _.singularize @table_name
+    msg  = "Are you sure you wish to destroy this #{name}"
+    @Api[@table_name].destroy @$.model, @attrs() if confirm msg
