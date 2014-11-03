@@ -16,6 +16,7 @@ window.$mkcontroller = (args..., definition)->
   class extends definition
     constructor:->
       set_args args, @, arguments
+      @_events = []
       @$export 'stop'
       @$root = @$.$root
       super
@@ -24,10 +25,16 @@ window.$mkcontroller = (args..., definition)->
         @$[arg] = @[arg]
     $emit: (args...)=>      @$.$emit args...
     $broadcast: (args...)=> @$.$broadcast args...
-    $on: (args...) =>       @$.$on args...
+    $on: (args...) =>       @_events.push @$.$on args...
     stop:(event)=>
       event.stop()
       @$
+    _register:=>
+      super
+      @$on '$destroy', @_unregister
+    _unregister:=>
+      for fn in @_events
+        fn()
 window.$controller = (name, args..., definition) ->
   args.unshift '$scope': '$'
   args.push 'Event'

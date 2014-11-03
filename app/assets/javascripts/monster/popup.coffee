@@ -8,14 +8,13 @@ class window.Popup
              'cancel',
              'bg_cancel',
              'destroy'
-    @_events = []
     if @_action is 'form'
-      @_events.push @$on "#{@table_name}/new#pop" , @pop
-      @_events.push @$on "#{@table_name}/edit#pop", @pop
-      @_events.push @$on "#{@table_name}/form#pop", @pop
+      @$on "#{@table_name}/new#pop" , @pop
+      @$on "#{@table_name}/edit#pop", @pop
+      @$on "#{@table_name}/form#pop", @pop
     else
-      @_events.push @$on "#{@table_name}/#{@action}#pop", @pop
-    @_events.push @$on 'popup/close', @esc_cancel
+      @$on "#{@table_name}/#{@action}#pop", @pop
+    @$on 'popup/close', @esc_cancel
     if @_action is 'form' && @ui_router
       @action = 'new'
       @action = 'edit' if @$stateParams.id
@@ -105,19 +104,16 @@ class window.Popup
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
     switch @action
       when 'new'
-        @_events.push @$on "#{path}/create"    , @success
-        @_events.push @$on "#{path}/create#err", @err
+        @$on "#{path}/create"    , @success
+        @$on "#{path}/create#err", @err
       when 'edit'
-        @_events.push @$on "#{path}/update"    , @success
-        @_events.push @$on "#{path}/update#err", @err
-        @_events.push @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
+        @$on "#{path}/update"    , @success
+        @$on "#{path}/update#err", @err
+        @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       else
-        @_events.push @$on "#{path}/#{@action}"    , @success
-        @_events.push @$on "#{path}/#{@action}#err", @err
-    @$on '$destroy', @_unregister
-  _unregister:=>
-    for fn in @_events
-      fn()
+        @$on "#{path}/#{@action}"    , @success
+        @$on "#{path}/#{@action}#err", @err
+    super
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'

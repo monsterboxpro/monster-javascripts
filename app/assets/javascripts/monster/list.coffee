@@ -40,7 +40,7 @@ class window.List
     if pagination
       @$.pagination = JSON.parse(pagination)
     if @root
-      @$.$root[@table_name] = data
+      @$root[@table_name] = data
     else
       @$[@table_name] = data
     @collection          = @$[@table_name]
@@ -50,20 +50,15 @@ class window.List
   _register:=>
     path = @table_name
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
-    @_events = []
-    @_events.push @$on "#{path}/#{@action}", @index_success
-    @_events.push @$on "#{path}/create" , @create_success
-    @_events.push @$on "#{path}/update" , @update_success
-    @_events.push @$on "#{path}/destroy", @destroy_success
-    @$on '$destroy', @_unregister
+    @$on "#{path}/#{@action}", @index_success
+    @$on "#{path}/create"    , @create_success
+    @$on "#{path}/update"    , @update_success
+    @$on "#{path}/destroy"   , @destroy_success
     @$.$watch 'pagination.page', (new_val,old_val)=>
       @reindex() if new_val != old_val
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
-  _unregister:=>
-    for fn in @_events
-      fn()
 
 class window.PusherList
   scope: []
@@ -104,8 +99,7 @@ class window.PusherList
     path = @table_name
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
     project_id = @$stateParams.project_id
-    @_events = []
-    @_events.push @$on "#{path}/#{@action}", @index_success
+    @$on "#{path}/#{@action}", @index_success
     if project_id
       key = "private-projects.#{project_id}"
       @Pusher.subscribe key
@@ -116,9 +110,6 @@ class window.PusherList
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
-  _unregister:=>
-    for fn in @_events
-      fn()
     project_id = @$stateParams.project_id
     if project_id
       path = @table_name
