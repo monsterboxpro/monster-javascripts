@@ -39,7 +39,10 @@ window.$controller = (name, args..., definition) ->
   args.unshift '$scope': '$'
   args.push 'Event'
   args.push 'Api'
-  if $('body').hasClass('home_pages') || $('body').hasClass('app_pages')
+  if $('body').hasClass('home_pages') || 
+     $('body').hasClass('app_pages')  ||
+     $('body').hasClass('pages_app')  ||
+     $('body').hasClass('pages_home')
     args.push '$state'
     args.push '$stateParams'
   names = name.split '/'
