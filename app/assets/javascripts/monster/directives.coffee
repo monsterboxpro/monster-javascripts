@@ -26,43 +26,23 @@ app.directive 'ready', ->
   (scope, element, attrs) ->
     element.removeClass 'not_ready'
 
-directive = ($state, $stateParams, $interpolate) ->
-  restrict: 'A'
-  controller: ['$scope','$element','$attrs',($scope, $element, $attrs) ->
-      equalForKeys = (a, b, keys) ->
-        unless keys
-          keys = []
-          for n of a # Used instead of Object.keys() for IE8 compatibility
-            continue
-        i = 0
-
-        while i < keys.length
-          k = keys[i]
-          return false  unless a[k] is b[k] # Not '===', values aren't necessarily normalized
-          i++
-        true
-      matchesParams = ->
-        not params or equalForKeys(params, $stateParams)
+$directive 'uiActive', '$state',
+  ($state)->
+    (scope,element,attrs)->
       update = ->
-        actives      = $attrs.uiActive.split ' '
-        active_class = false
-        for active in actives
-          if $state.current.controller.match active
-            active_class = true
-
-        if active_class
-          $element.addClass 'active'
-        else
-          $element.removeClass 'active'
+        if $state.current.templateUrl
+          name = $state.current.templateUrl.replace /\//g, '_'
+          matched = name is attrs.uiActive
+          if matched
+            element.addClass 'active'
+          else
+            element.removeClass 'active'
         return
-      @$$setStateInfo = (newState, newParams) ->
-        state  = $state.get(newState, stateContext($element))
-        params = newParams
+      @$$setStateInfo = (newState) ->
+        state = $state.get newState, stateContext(element)
         update()
         return
-      $scope.$on '$stateChangeSuccess', update
-  ]
-app.directive 'uiActive', ['$state', '$stateParams', '$interpolate',directive]
+      scope.$on '$stateChangeSuccess', update
 
 Link = ($state, $stateParams, $interpolate) ->
   restrict: 'A'
