@@ -5,8 +5,8 @@ class window.List
   root   : false
   search : false
   action : 'index'
-  attrs: =>
-    {}
+  collection_name: null
+  attrs: => {}
   constructor:->
     @table_name = @_controller unless @table_name
     @_register()
@@ -39,11 +39,12 @@ class window.List
     pagination = headers('X-Pagination')
     if pagination
       @$.pagination = JSON.parse(pagination)
+    name = @collection_name || @table_name
     if @root
-      @$root[@table_name] = data
+      @$root[name] = data
     else
-      @$[@table_name] = data
-    @collection          = @$[@table_name]
+      @$[name] = data
+    @collection = @$[name]
   create_success:(e,data)=>  _.create  @collection, data
   update_success:(e,data)=>  _.update  @collection, data
   destroy_success:(e,data)=> _.destroy @collection, data
@@ -66,6 +67,7 @@ class window.PusherList
   popups: false
   root   : false
   action : 'index'
+  collection_name: null
   constructor:->
     @table_name = @_controller unless @table_name
     @_register()
@@ -81,11 +83,12 @@ class window.PusherList
     msg  = "Are you sure you wish to to destroy this #{name}"
     @Api[@table_name].destroy model if confirm msg
   index_success:(e,data)=>
-    if @root is true
-      @$root[@table_name] = data
+    name = @collection_name || @table_name
+    if @root
+      @$root[name] = data
     else
-      @$[@table_name] = data
-    @collection          = @$[@table_name]
+      @$[name] = data
+    @collection = @$[name]
   create_success:(data)=> 
     _.create  @collection, data
     @$.$apply()
