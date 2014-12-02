@@ -113,7 +113,7 @@ class window.Popup
       else
         @$on "#{path}/#{@action}"    , @success
         @$on "#{path}/#{@action}#err", @err
-    super
+    true
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
