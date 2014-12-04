@@ -57,7 +57,7 @@ class window.List
     @$on "#{path}/destroy"   , @destroy_success
     if @pull
       @$.$watch 'pagination.page', (new_val,old_val)=>
-        @reindex() if oldv != undefined && new_val != old_val
+        @reindex() if old_val != undefined && new_val != old_val
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
