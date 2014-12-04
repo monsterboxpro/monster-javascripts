@@ -5,13 +5,6 @@ app.directive 'draggablePopup', ->
     scope.$on 'reset_popup_position', ->
       element.removeAttr 'style'
 
-#app.directive 'esc', ->
-  #(scope, element, attrs) ->
-    #$(document).bind 'keydown', 'esc', ()=>
-      #scope.$root.$broadcast 'popup/close'
-    #$('input,textarea,select').bind 'keydown', 'esc', ()=>
-      #scope.$root.$broadcast 'popup/close'
-
 app.directive 'focusOn', ->
   link: (scope,element,attrs) ->
     scope.$watch attrs.focusOn, ->
@@ -185,3 +178,12 @@ $directive 'monsterPaginateFull', '$templateCache', '$compile', ($templateCache,
     template = $compile(html)(scope)
     element.html template
 
+
+directive = ->
+  scope:
+    model: '=monsterFile'
+  link:(scope,element,attrs)->
+    element.on 'change', (e)->
+      scope.model = e.target.files[0]
+      scope.$apply()
+app.directive 'monsterFile', [directive]
