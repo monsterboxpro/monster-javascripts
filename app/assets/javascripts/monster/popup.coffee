@@ -29,7 +29,7 @@ class window.Popup
       @action = 'new'
       @action = 'edit' if data.model && data.model.id
     @popup_title()
-    @$.save_label = @save_label || 'Save'
+    @compute_save_label()
     @$.action = @action
 
     @_register()
@@ -57,13 +57,28 @@ class window.Popup
     else
       @pull
   popup_title:=>
-    if @title
-      @$.title = @title
+    @$.title =
+    if @title && @title.new && @action is 'new'
+      @title.new
+    else if @title && @title.edit && @action is 'edit'
+      @title.edit
+    else if @title
+      @title
     else
-    if @table_name
-      name = _.singularize @table_name
-      name = name.replace /_/, ' '
-      @$.title = "#{_.capitalize(@action)} #{name}"
+      if @table_name
+        name = _.singularize @table_name
+        name = name.replace /_/, ' '
+        @$.title = "#{_.capitalize(@action)} #{name}"
+  compute_save_label:=>
+    @$.save_label =
+    if @save_label && @save_label.new  && @action is 'new'
+      @save_label.new
+    else if @save_label && @save_label.edit && @action is 'edit'
+      @save_label.edit
+    else if @save_label
+      @save_label
+    else
+      'Save'
   bg_cancel:(e)=>
     if e && e.target && $(event.target).hasClass('popup_wrap')
       e.stopPropagation() if event.stopPropagation
