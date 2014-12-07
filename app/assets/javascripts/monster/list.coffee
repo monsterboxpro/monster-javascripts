@@ -55,8 +55,9 @@ class window.List
     @$on "#{path}/create"    , @create_success
     @$on "#{path}/update"    , @update_success
     @$on "#{path}/destroy"   , @destroy_success
-    @$.$watch 'pagination.page', (new_val,old_val)=>
-      @reindex() if new_val != old_val
+    if @pull
+      @$.$watch 'pagination.page', (new_val,old_val)=>
+        @reindex() if old_val != undefined && new_val != old_val
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
