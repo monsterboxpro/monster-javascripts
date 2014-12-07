@@ -29,6 +29,7 @@ class window.Popup
       @action = 'new'
       @action = 'edit' if data.model && data.model.id
     @popup_title()
+    @$.save_label = @save_label || 'Save'
     @$.action = @action
 
     @_register()
@@ -56,6 +57,9 @@ class window.Popup
     else
       @pull
   popup_title:=>
+    if @title
+      @$.title = @title
+    else
     if @table_name
       name = _.singularize @table_name
       name = name.replace /_/, ' '
