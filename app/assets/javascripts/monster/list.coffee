@@ -11,9 +11,11 @@ class window.List
     @table_name = @_controller unless @table_name
     @_register()
     if @popups is true
+      name = @collection_name || @table_name
       @$.pop =
-        new:  if @Event[@table_name] && @Event[@table_name].new  then @Event[@table_name].new  else @Event.template(@table_name,'new')
-        edit: if @Event[@table_name] && @Event[@table_name].edit then @Event[@table_name].edit else @Event.template(@table_name,'edit')
+        show: if @Event[name] && @Event[name].show then @Event[name].show else @Event.template(name,'show')
+        new:  if @Event[name] && @Event[name].new  then @Event[name].new  else @Event.template(name,'new')
+        edit: if @Event[name] && @Event[name].edit then @Event[name].edit else @Event.template(name,'edit')
     @reindex() if @pull
     @$.$watch 'search', @update_search if @search
     @index_success null, @data() if @data
@@ -49,9 +51,15 @@ class window.List
   update_success:(e,data)=>  _.update  @collection, data
   destroy_success:(e,data)=> _.destroy @collection, data
   _register:=>
+
     path = @table_name
-    path = [@_prefix(),@table_name].join '/'  if _.any @scope
+    path = [@_prefix(),name].join '/'  if _.any @scope
     @$on "#{path}/#{@action}", @index_success
+
+    name = @collection_name || @table_name
+    path = name
+    path = [@_prefix(),name].join '/'  if _.any @scope
+
     @$on "#{path}/create"    , @create_success
     @$on "#{path}/update"    , @update_success
     @$on "#{path}/destroy"   , @destroy_success
