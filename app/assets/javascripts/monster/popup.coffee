@@ -127,6 +127,7 @@ class window.Popup
         @$on "#{path}/create#err", @err
       when 'edit'
         @$on "#{path}/update"    , @success
+        @$on "#{path}/destroy"   , @success
         @$on "#{path}/update#err", @err
         @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       else
