@@ -4,4 +4,5 @@
 //= require './monster/filters'
 //= require './monster/form'
 //= require './monster/list'
+//= require './monster/show'
 //= require './monster/popup'
