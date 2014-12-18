@@ -98,6 +98,12 @@ $directive 'tableHeading', '$timeout','$window',
       scope.$watch attrs.tableHeading       , resize
       scope.$on 'data_heading'              , resize
 
+$directive 'bgImage', ->
+  scope:
+    "bg_image": "=bgImage"
+  link: (scope,element,attrs)->
+    element.css 'background-image', "url(#{scope.bg_image})"
+
 controller = $mkcontroller class
   constructor:->
     @$.has_next_page     = @has_next_page
