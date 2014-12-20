@@ -55,8 +55,8 @@ Link = ($state, $stateParams, $interpolate) ->
 app.directive 'uiClass',['$state', '$stateParams','$interpolate',Link]
 
 
-controller = class
-  constructor:(@$)->
+$controller 'monster-directives/pagination', class
+  constructor:->
     @$.has_next_page     = @has_next_page
     @$.has_previous_page = @has_previous_page
     @$.next_page         = @next_page
@@ -71,7 +71,7 @@ controller = class
   has_previous_page:=> !@$.$parent.pagination?.first_page
 directive = () ->
   priority: 1000
-  controller: ['$scope', controller]
+  controller: 'monster-directives/pagination'
   scope: {}
   template: '''
     <div class="button" ng-click="previous_page()">
@@ -98,7 +98,7 @@ $directive 'tableHeading', '$timeout','$window',
       scope.$watch attrs.tableHeading       , resize
       scope.$on 'data_heading'              , resize
 
-controller = $mkcontroller class
+$controller 'monster-directives/pagination-full', class
   constructor:->
     @$.has_next_page     = @has_next_page
     @$.has_previous_page = @has_previous_page
@@ -147,7 +147,7 @@ controller = $mkcontroller class
 $directive 'monsterPaginateFull', '$templateCache', '$compile', ($templateCache,$compile) ->
   scope:
     'pagination': '=monsterPaginateFull'
-  controller:['$scope', controller]
+  controller: 'monster-directives/pagination-full'
   link:(scope,element,attrs)->
     if attrs.monsterTemplate
       html = $templateCache.get(attrs.monsterTemplate)
