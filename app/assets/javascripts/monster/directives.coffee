@@ -25,7 +25,8 @@ $directive 'uiActive', '$state',
       update = ->
         if $state.current.templateUrl
           name = $state.current.templateUrl.replace /\//g, '_'
-          matched = name is attrs.uiActive
+          reg = new RegExp name
+          matched = name.match(attrs.uiActive)
           if matched
             element.addClass 'active'
           else
@@ -97,6 +98,12 @@ $directive 'tableHeading', '$timeout','$window',
       angular.element($window).bind 'resize', resize
       scope.$watch attrs.tableHeading       , resize
       scope.$on 'data_heading'              , resize
+
+$directive 'bgImage', ->
+  scope:
+    "bg_image": "=bgImage"
+  link: (scope,element,attrs)->
+    element.css 'background-image', "url(#{scope.bg_image})"
 
 $controller 'monster-directives/pagination-full', class
   constructor:->
