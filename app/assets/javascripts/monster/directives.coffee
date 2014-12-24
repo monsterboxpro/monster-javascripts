@@ -145,7 +145,6 @@ $controller 'monster-directives/pagination-full', class
         if _.last(numbers).n != @$.pagination.total_pages
           numbers.push type: 'page', n: @$.pagination.total_pages
         @$.pages = numbers
-    console.log @$.pages
     numbers
   has_next_page:=>     !@$.pagination?.last_page
   has_previous_page:=> !@$.pagination?.first_page
