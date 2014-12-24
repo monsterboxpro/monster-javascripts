@@ -136,10 +136,10 @@ $controller 'monster-directives/pagination-full', class
         while _.last(numbers).n > @$.pagination.total_pages
           numbers.pop()
         _.findWhere(numbers,n: @$.pagination.page).type = 'current_page'
-          numbers.unshift type: 'skip'                               if numbers[0].n >= 3
-          numbers.unshift type: 'page', n: 1                         if numbers[0].n != 1
-          numbers.push    type: 'skip'                               if _.last(numbers).n < @$.pagination.total_pages - 1
-          numbers.push    type: 'page', n: @$.pagination.total_pages if _.last(numbers).n != @$.pagination.total_pages
+        numbers.unshift type: 'skip'                              if numbers[0].n >= 3
+        numbers.unshift type: 'page', n: 1                         if numbers[0].n != 1
+        numbers.push    type: 'skip'                               if _.last(numbers).n < @$.pagination.total_pages - 1
+        numbers.push    type: 'page', n: @$.pagination.total_pages if _.last(numbers).n != @$.pagination.total_pages
         @$.pages = numbers
     numbers
   has_next_page:=>     !@$.pagination?.last_page
