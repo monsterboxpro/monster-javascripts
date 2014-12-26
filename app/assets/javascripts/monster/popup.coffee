@@ -108,7 +108,7 @@ class window.Popup
     @$.pop = false
     @$root.popped = false
   err:(e,data)=>
-    @$.errors = data.errors
+    @$.errors = data
     @$.pop = true
   context:=> {}
   filter_params:()=>
