@@ -53,6 +53,3 @@ app.filter 'data_table_datetime', ->
     else if moment(input).isSame(new Date,'year') then moment(input).format 'MMM-DD h:mma'
     else
       moment(input).format('YYYY MMM-DD h:mma')
-
-
-

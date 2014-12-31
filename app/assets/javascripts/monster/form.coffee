@@ -7,8 +7,9 @@ class window.Form
     @action     ||= @_action
     @action       = 'new'  if @_action is 'form'
     @action       = 'edit' if @_action is 'form' and @$stateParams.id
-    @$.save  = @save
-    @$.back  = @back
+    @$export 'save',
+             'back',
+             'destroy'
     @$.title = "#{@action} #{@table_name}"
     @_register()
     @reset()
@@ -69,3 +70,7 @@ class window.Form
     switch @action
       when 'new'  then @$state.go @table_name
       when 'edit' then @$state.go "#{@table_name}.show"
+  destroy:=>
+    name = _.singularize @table_name
+    msg  = "Are you sure you wish to destroy this #{name}"
+    @Api[@table_name].destroy @$.model, @attrs() if confirm msg
