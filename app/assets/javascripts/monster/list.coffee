@@ -8,6 +8,7 @@ class window.List
   collection_name: null
   attrs: => {}
   constructor:->
+    @collection = []
     @table_name = @_controller unless @table_name
     @_register()
     if @popups is true
@@ -77,7 +78,9 @@ class window.PusherList
   root   : false
   action : 'index'
   collection_name: null
+  channel: ''
   constructor:->
+    @collection = []
     @table_name = @_controller unless @table_name
     @_register()
     if @popups is true
@@ -110,14 +113,11 @@ class window.PusherList
   _register:=>
     path = @table_name
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
-    project_id = @$stateParams.project_id
     @$on "#{path}/#{@action}", @index_success
-    if project_id
-      key = "private-projects.#{project_id}"
-      @Pusher.subscribe key
-      @Pusher.$on key, "#{path}/create" , @create_success
-      @Pusher.$on key, "#{path}/update" , @update_success
-      @Pusher.$on key, "#{path}/destroy", @destroy_success
+    @Pusher.subscribe @channel()
+    @Pusher.$on @channel(), "#{path}/create" , @create_success
+    @Pusher.$on @channel(), "#{path}/update" , @update_success
+    @Pusher.$on @channel(), "#{path}/destroy", @destroy_success
     @$on '$destroy', @_unregister
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"

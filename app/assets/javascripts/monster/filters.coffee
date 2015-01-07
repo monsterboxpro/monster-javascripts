@@ -59,3 +59,12 @@ app.filter 'data_table_duration', ->
     minutes = Math.floor(input / 60)
     seconds = input - minutes * 60
     "#{minutes}.#{seconds} mins"
+
+app.filter 'data_table_filesize', ->
+  (bytes) ->
+    sizes = ["Bytes", "KB", "MB", "GB", "TB"]
+    return "n/a"  if bytes is 0
+    i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+    return bytes + " " + sizes[i]  if i is 0
+    (bytes / Math.pow(1024, i)).toFixed(1) + " " + sizes[i]
+
