@@ -25,9 +25,8 @@ $directive 'uiActive', '$state',
       update = ->
         if $state.current.templateUrl
           name = $state.current.templateUrl.replace /\//g, '_'
-          reg = new RegExp name
-          matched = name.match(attrs.uiActive)
-          if matched
+          reg = new RegExp attrs.uiActive
+          if name =~ reg
             element.addClass 'active'
           else
             element.removeClass 'active'
