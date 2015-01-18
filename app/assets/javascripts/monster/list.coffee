@@ -1,9 +1,9 @@
 class window.List
   scope: []
-  pull   : false
-  popups : false
-  root   : false
-  search : false
+  pull        : false
+  popups      : false
+  root        : false
+  search      : false
   action : 'index'
   collection_name: null
   attrs: => {}
@@ -17,13 +17,21 @@ class window.List
         show: if @Event[name] && @Event[name].show then @Event[name].show else @Event.template(name,'show')
         new:  if @Event[name] && @Event[name].new  then @Event[name].new  else @Event.template(name,'new')
         edit: if @Event[name] && @Event[name].edit then @Event[name].edit else @Event.template(name,'edit')
+    if @search is 'location'
+      search = @$location.search()
+      @$.search = search.search if search.search
     @reindex() if @pull
-    @$.$watch 'search', @update_search if @search
+    @$.$watch 'search', _.debounce(@update_search, 500) if @search
     @index_success null, @data() if @data
     @$.destroy = @destroy
     @reindex = _.debounce @reindex, 100
-  update_search:(old_val,new_val)=>
-    if old_val != new_val
+  update_search:(val,old)=>
+    if old != val
+      if @search is 'location'
+        if val != ''
+          @$location.search 'search', val
+        else
+          @$location.search 'search', null
       if @$.pagination
         @$.pagination.page = 1
       @reindex() if @pull
@@ -52,7 +60,6 @@ class window.List
   update_success:(e,data)=>  _.update  @collection, data
   destroy_success:(e,data)=> _.destroy @collection, data
   _register:=>
-
     path = @table_name
     path = [@_prefix(),name].join '/'  if _.any @scope
     @$on "#{path}/#{@action}", @index_success
@@ -131,6 +138,7 @@ class window.PusherList
       @Pusher.$off key, "#{path}/update" , @update_success
       @Pusher.$off key, "#{path}/destroy", @destroy_success
 
+# Uunsure if this is ever used anymore.
 class window.SearchList extends List
   constructor:->
     @$export 'is_first_page',

@@ -48,6 +48,7 @@ window.$controller = (name, args..., definition) ->
      $('body').hasClass('pages_home')
     args.push '$state'
     args.push '$stateParams'
+    args.push '$location'
   names = name.split '/'
   injection_args = args_to_injection_parameters args
   super_def = class extends $mkcontroller args..., definition

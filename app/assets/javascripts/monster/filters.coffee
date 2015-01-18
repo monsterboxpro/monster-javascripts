@@ -1,5 +1,6 @@
 app.filter 'highlight', ->
   (text, search, caseSensitive) ->
+    return unless text
     if search or angular.isNumber(search)
       text = text.toString()
       search = search.toString()
