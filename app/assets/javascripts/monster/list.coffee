@@ -19,12 +19,26 @@ class window.List
         edit: if @Event[name] && @Event[name].edit then @Event[name].edit else @Event.template(name,'edit')
     if @search is 'location'
       search = @$location.search()
-      @$.search = search.search if search.search
+      @$.search     = search.search       if search.search
+      @$.pagination = {page: search.page} if search.page
     @reindex() if @pull
     @$.$watch 'search', _.debounce(@update_search, 500) if @search
     @index_success null, @data() if @data
-    @$.destroy = @destroy
+    @$export 'sort',
+             'destroy'
+    @$.predicate =
+      name: 'id'
+      dir: 'asc'
     @reindex = _.debounce @reindex, 100
+  sort:(name)=>
+    dir = if @$.predicate.name is name
+      if @$.predicate.dir == 'desc' then 'asc' else 'desc'
+    else 
+      'asc'
+    @$.predicate = {name: name, dir: dir}
+    @$location.search 'sort', "#{name},#{dir}"
+    @$.sortable = true
+    @reindex()
   update_search:(val,old)=>
     if old != val
       if @search is 'location'
@@ -34,6 +48,7 @@ class window.List
           @$location.search 'search', null
       if @$.pagination
         @$.pagination.page = 1
+        @$location.search 'page', null
       @reindex() if @pull
   reindex:=>
     attrs = @attrs()
@@ -41,6 +56,13 @@ class window.List
       attrs.page = @$.pagination.page
     if @search && @$.search
       attrs.search = @$.search
+    if @$.sortable
+      attrs.sort   = @$location.search().sort
+    if @$.pagination
+      if @$.pagination.page is 1
+        @$location.search 'page', null
+      else
+        @$location.search 'page', @$.pagination.page
     @Api[@table_name][@action] attrs
   destroy:(model)=>
     name = _.singularize @table_name
