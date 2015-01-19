@@ -1,5 +1,5 @@
 module Monster
   module Javascripts
-    VERSION = "0.4.15"
+    VERSION = "0.4.16"
   end
 end

@@ -102,6 +102,8 @@ class window.Popup
       when 'new'  then @Api[@table_name].create params, opts
       when 'edit' then @Api[@table_name].update @$.model.id, params, opts
       else @Api[@table_name][@action] @$.model.id, params, opts
+  new_success:(e,data)=>
+    @$.model = data
   edit_success:(e,data)=>
     @$.model = data
   success:(e,data)=>
@@ -123,6 +125,7 @@ class window.Popup
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
     switch @action
       when 'new'
+        @$on "#{path}/new"       , @new_success
         @$on "#{path}/create"    , @success
         @$on "#{path}/create#err", @err
       when 'edit'
