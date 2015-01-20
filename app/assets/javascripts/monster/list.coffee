@@ -143,10 +143,11 @@ class window.PusherList
     path = @table_name
     path = [@_prefix(),@table_name].join '/'  if _.any @scope
     @$on "#{path}/#{@action}", @index_success
-    @Pusher.subscribe @channel()
-    @Pusher.$on @channel(), "#{path}/create" , @create_success
-    @Pusher.$on @channel(), "#{path}/update" , @update_success
-    @Pusher.$on @channel(), "#{path}/destroy", @destroy_success
+    channel = if _.isString(@channel) then @channel else @channel()
+    @Pusher.subscribe  channel
+    @Pusher.$on channel, "#{path}/create" , @create_success
+    @Pusher.$on channel, "#{path}/update" , @update_success
+    @Pusher.$on channel, "#{path}/destroy", @destroy_success
     @$on '$destroy', @_unregister
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
