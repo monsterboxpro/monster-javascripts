@@ -24,7 +24,11 @@ $directive 'uiActive', '$state',
     (scope,element,attrs)->
       update = ->
         if $state.current.templateUrl
-          name = $state.current.templateUrl.replace /\//g, '_'
+          name =
+          if attrs.uiBy and attrs.uiBy is 'name'
+            $state.current.name
+          else
+            $state.current.templateUrl.replace /\//g, '_'
           reg = new RegExp attrs.uiActive
           if name.match(reg)
             element.addClass 'active'
