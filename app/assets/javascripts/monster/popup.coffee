@@ -111,6 +111,7 @@ class window.Popup
     @$.pop = false
     @$root.popped = false
   err:(e,data)=>
+    @$.errors = null # to cause flicker for fade in.
     @$.errors = data
     @$.pop = true
   context:=> {}
