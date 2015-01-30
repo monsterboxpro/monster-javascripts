@@ -4,6 +4,7 @@ app.filter 'highlight', ->
     if search or angular.isNumber(search)
       text = text.toString()
       search = search.toString()
+      search = search.replace(/\s/g,'|')
       if caseSensitive
         text.split(search).join "<span class=\"ui-match\">" + search + "</span>"
       else
