@@ -11,6 +11,7 @@ class window.Form
              'back',
              'destroy'
     @$.title = "#{@action} #{@table_name}"
+    @$.loading = false
     @_register()
     @reset()
   reset:=>
@@ -49,10 +50,12 @@ class window.Form
     @$.model     = data
     name         = _.singularize @table_name
     @$root[name] = data if @root
+    @$.loading = true
   edit_success:(e,data)=>
     @$.model     = data
     name         = _.singularize @table_name
     @$root[name] = data if @root
+    @$.loading = true
   create_success:(e,data)=> @success data
   update_success:(e,data)=>  @success data
   success:(data)=> @$state.go "#{@table_name}.show", {id: data.id}

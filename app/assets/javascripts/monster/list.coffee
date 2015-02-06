@@ -26,6 +26,7 @@ class window.List
     @index_success null, @data() if @data
     @$export 'sort',
              'destroy'
+    @$.loading = true
     @$.predicate =
       name: 'id'
       dir: 'asc'
@@ -63,12 +64,14 @@ class window.List
         @$location.search 'page', null
       else
         @$location.search 'page', @$.pagination.page
+    @$.loading = true
     @Api[@table_name][@action] attrs
   destroy:(model)=>
     name = _.singularize @table_name
     msg  = "Are you sure you wish to destroy this #{name}"
     @Api[@table_name].destroy model, @attrs() if confirm msg
   index_success:(e,data,opts,status,headers,config)=>
+    @$.loading = false
     pagination = headers('X-Pagination')
     if pagination
       @$.pagination = JSON.parse(pagination)

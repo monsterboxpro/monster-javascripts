@@ -86,13 +86,16 @@ class window.Popup
       e.preventDefault()  if event.preventDefault
       e.cancelBubble = true
       e.returnValue  = false
+      @$.errors = null
       @$.pop = false
       @$.$apply() unless @$.$$phase
   esc_cancel:=>
+    @$.errors = null
     @$.pop = false
     @$root.popped = false
     @$.$apply() unless @$.$$phase
   cancel:=>
+    @$.errors = null
     @$.pop = false
     @$root.popped = false
   save:=>
@@ -111,7 +114,7 @@ class window.Popup
     @$.pop = false
     @$root.popped = false
   err:(e,data)=>
-    @$.errors = null # to cause flicker for fade in.
+    @$.errors = null
     @$.errors = data
     @$.pop = true
   context:=> {}
