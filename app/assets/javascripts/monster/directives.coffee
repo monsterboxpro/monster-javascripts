@@ -78,14 +78,14 @@ directive = () ->
   controller: 'monster-directives/pagination'
   scope: {}
   template: '''
-    <div class="button" ng-click="previous_page()">
+    <div class="button prev" ng-click="previous_page()">
       <span class="fa fa-chevron-left"></span>
     </div>
-    <div class="button" ng-click="next_page()">
+    <div class="button next" ng-click="next_page()">
       <span class="fa fa-chevron-right"></span>
     </div>
   '''
-app.directive 'pagination', [directive]
+app.directive 'pager', [directive]
 
 $directive 'tableHeading', '$timeout','$window',
   ($timeout,$window)->
@@ -108,7 +108,7 @@ $directive 'tableHeading', '$timeout','$window',
             element.find(".cell:nth-child(#{i+1})").css width: "#{width}px"
         $timeout fun, 0
       angular.element($window).bind 'resize', resize
-      angular.element($window).bind 'scroll', scroll
+      #angular.element($window).bind 'scroll', scroll
       scope.$watch attrs.tableHeading       , resize
       scope.$on 'data_heading'              , resize
 
