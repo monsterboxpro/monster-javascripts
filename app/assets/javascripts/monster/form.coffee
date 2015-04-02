@@ -26,6 +26,7 @@ class window.Form
     params      = @filter_params()
     opts        = @context()
     opts.prefix = @_prefix()  if _.any @scope
+    console.log @action
     switch @action
       when 'new'  then @Api[@table_name].create             params, opts
       when 'edit' then @Api[@table_name].update   @$.model, params, opts
@@ -36,6 +37,7 @@ class window.Form
         @$on "#{@table_name}/edit"      , @edit_success
         @$on "#{@table_name}/update"    , @update_success
         @$on "#{@table_name}/update#err", @create_failure
+        @$on "#{@table_name}/destroy"   , @destroy_success
       when 'new'
         @$on "#{@table_name}/new"       , @new_success
         @$on "#{@table_name}/create"    , @create_success
@@ -58,9 +60,12 @@ class window.Form
     @$.loading = true
   create_success:(e,data)=> @success data
   update_success:(e,data)=>  @success data
+  destroy_success:(e,data)=> 
+    # define yourself
   success:(data)=> @$state.go "#{@table_name}.show", {id: data.id}
   create_failure:(e,data)=>
     @$.error_set_focus = false
+    console.log data
     @$.errors = data
   attrs:=>
     {}

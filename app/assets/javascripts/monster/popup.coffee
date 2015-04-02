@@ -48,6 +48,8 @@ class window.Popup
           else
             angular.copy data.model
           @$.model = model
+      else
+        @$.model = angular.copy(data.model) || @model || {}
     @$.pop        = true
     @$root.popped = true
   attrs:=>
