@@ -128,7 +128,11 @@ class window.Popup
     switch @action
       when 'new'  then @Api[@table_name].create params, opts
       when 'edit' then @Api[@table_name].update @$.model.id, params, opts
-      else @Api[@table_name][@action] @$.model.id, params, opts
+      else 
+        opts.tag = 'success'
+        @Api[@table_name][@action] @$.model.id, params, opts
+  custom_success:(e,data)=>
+    @$.model = data
   new_success:(e,data)=>
     @$.model = data
   edit_success:(e,data)=>
@@ -162,8 +166,9 @@ class window.Popup
         @$on "#{path}/update#err", @err
         @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       else
-        @$on "#{path}/#{@action}"    , @success
-        @$on "#{path}/#{@action}#err", @err
+        @$on "#{path}/#{@action}"        , @custom_success
+        @$on "#{path}/#{@action}#success", @success
+        @$on "#{path}/#{@action}#err"    , @err
     true
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"

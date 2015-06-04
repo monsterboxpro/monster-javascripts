@@ -4,6 +4,13 @@
 # License: MIT
 #
 
+# Passing Params
+# @Api.users.index({student_id: 23})
+#
+# Add a tag to end of event string
+# @Api.users.index({},tag: 'success') => 'users/index#success'
+
+
 parameter_name = (root)->
   name = root[0]
   name += '['  + root.slice(1).join('][') + ']' if root.length > 1
@@ -78,7 +85,11 @@ class window.ApiBase
   _callback:(table_name,req,action,opts)=>
     msg  = "#{table_name}/#{action}"
     msg  = "#{@_scope}/#{msg}" if @_scope
-    req.success (data, status, headers, config)=> @$rootScope.$broadcast msg         , data, opts, status, headers, config
+    nmsg = if opts.tag
+      "#{msg}##{opts.tag}"
+    else
+      msg
+    req.success (data, status, headers, config)=> @$rootScope.$broadcast nmsg         , data, opts, status, headers, config
     req.error (data, status, headers, config)=>   @$rootScope.$broadcast "#{msg}#err", data, opts, status, headers, config
     req
   _extract_id:(model)=>
