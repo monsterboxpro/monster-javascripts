@@ -1,3 +1,23 @@
+# $controller 'users/show', class extends Popup
+#   pull: true
+#
+# $controller 'users/form', class extends Popup
+#   pull: ['edit']
+#
+# $controller 'users/show', class extends Popup
+#   attrs:=>
+#     { student_id: @$stateParams.id }
+#
+# $controller 'users/form', class extends Popup
+#   title:
+#     new: 'Add a user'
+#     edit: 'Update a user'
+
+# $controller 'users/form', class extends Popup
+#   save_label:
+#     new: 'Add'
+#     edit: 'Update User'
+#
 class window.Popup
   ui_router: false
   pull: false
