@@ -26,7 +26,6 @@ class window.Form
     params      = @filter_params()
     opts        = @context()
     opts.prefix = @_prefix()  if _.any @scope
-    console.log @action
     switch @action
       when 'new'  then @Api[@table_name].create             params, opts
       when 'edit' then @Api[@table_name].update   @$.model, params, opts
