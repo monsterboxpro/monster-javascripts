@@ -42,6 +42,7 @@ class window.Popup
     @$.submit = true
     @whitelist.push 'id' if @whitelist
   pop:(e,data={})=>
+    @$.model = {}
     @$.errors = null
     @$root.$broadcast 'reset_popup_position'
     _.each data, (v,k)=> @$[k] = v unless k is 'model'
