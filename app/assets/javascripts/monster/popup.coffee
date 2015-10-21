@@ -42,7 +42,7 @@ class window.Popup
     @$.submit = true
     @whitelist.push 'id' if @whitelist
   pop:(e,data={})=>
-    @$.model = {}
+    @$.model = @model || {}
     @$.errors = null
     @$root.$broadcast 'reset_popup_position'
     _.each data, (v,k)=> @$[k] = v unless k is 'model'
@@ -71,7 +71,7 @@ class window.Popup
           @$.model = model
       else
         if @can_pull(@action)
-          @$.model = {}
+          @$.model = @model || {}
           @Api[@table_name][@action] data.model, @attrs()
         else
           @$.model = angular.copy(data.model) || @model || {}
