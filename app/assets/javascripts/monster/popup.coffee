@@ -69,8 +69,11 @@ class window.Popup
             angular.copy data.model
           @$.model = model
       else
-        @$.model = angular.copy(data.model) || @model || {}
-        @Api[@table_name][@action] data.model, @attrs() if @can_pull(@action)
+        if @can_pull(@action)
+          @$.model = {}
+          @Api[@table_name][@action] data.model, @attrs()
+        else
+          @$.model = angular.copy(data.model) || @model || {}
     @$.pop        = true
     @$root.popped = true
   attrs:=>
