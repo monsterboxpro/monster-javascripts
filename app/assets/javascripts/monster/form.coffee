@@ -21,6 +21,9 @@ class window.Form
         @Api[@table_name].new @attrs() if @can_pull('new')
       when 'edit'
         @Api[@table_name].edit @$stateParams.id, @attrs() if @can_pull('edit')
+      else
+        if @can_pull()
+          @Api[@table_name][@action] @$stateParams.id, @attrs()
   context:=> {}
   save:=>
     params      = @filter_params()
