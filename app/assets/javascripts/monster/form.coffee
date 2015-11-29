@@ -41,6 +41,10 @@ class window.Form
         @$on "#{@table_name}/new"       , @new_success
         @$on "#{@table_name}/create"    , @create_success
         @$on "#{@table_name}/create#err", @create_failure
+      else
+        @$on "#{path}/#{@action}"        , @custom_success
+        @$on "#{path}/#{@action}#success", @success
+        @$on "#{path}/#{@action}#err"    , @err
   filter_params:=>
     name    = _.singularize @table_name
     attrs   = _.omit @$.model, @omit
@@ -66,6 +70,8 @@ class window.Form
     @$.error_set_focus = false
     console.log data
     @$.errors = data
+  custom_success:(e,data)=>
+    @$.model = data
   attrs:=>
     {}
   can_pull:(name)=>
