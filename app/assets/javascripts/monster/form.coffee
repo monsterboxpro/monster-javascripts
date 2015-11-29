@@ -42,9 +42,9 @@ class window.Form
         @$on "#{@table_name}/create"    , @create_success
         @$on "#{@table_name}/create#err", @create_failure
       else
-        @$on "#{path}/#{@action}"        , @custom_success
-        @$on "#{path}/#{@action}#success", @success
-        @$on "#{path}/#{@action}#err"    , @err
+        @$on "#{@table_name}/#{@action}"        , @custom_success
+        @$on "#{@table_name}/#{@action}#success", @success
+        @$on "#{@table_name}/#{@action}#err"    , @err
   filter_params:=>
     name    = _.singularize @table_name
     attrs   = _.omit @$.model, @omit
