@@ -18,6 +18,6 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rails", ">= 6.1.0"
+  spec.add_dependency "rails", ">= 4.2.3", "<= 6.1.0"
   spec.add_dependency "version", "~> 1.0.0a"
 end
